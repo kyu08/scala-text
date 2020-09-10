@@ -1,8 +1,7 @@
+import scala.math.pow
 object HelloWorld {
   def main(args: Array[String]): Unit = {
-    val age: Int = 9
-    var isSchoolStarted: Boolean = false
-    if(age >= 1 && age <= 7) isSchoolStarted = true
-    if(isSchoolStarted) println("幼児です") else println("幼児ではない")
+    for (a <- 1 to 1000; b <- 1 to 1000; c <- 1 to 1000 if a*a == b*b + c*c)
+      println((a,b,c))
   }
 }
