@@ -98,3 +98,58 @@ lst match {
 中置パターンのときは`List`ってかかなくていいってことはこれは`List`用の演算子ってこと？
 
 # クラス
+基本的な書き方
+```
+class Point(_x: Int, _y: Int) {
+	val x = _x
+	val y = _y
+}
+```
+こう書くこともできる
+```
+class Point(val x: Int, val y: Int){}
+
+```
+- クラス名の直後にコンストラクタ引数の定義がある
+
+### 疑問
+- `private[this]`よくわからなかった。"クラス内からのみアクセス可能"と"そのオブジェクトからのみアクセス可能"がどう違うかわからなかった。
+- なんでこれが動くんじゃ(`p1 + p2`のとこ)
+```
+class Point(val x: Int, val y: Int) {
+  def +(p: Point): Point = {
+    new Point(x + p.x, y + p.y)
+  }
+  override def toString(): String = "(" + x + ", " + y + ")"
+}
+
+val p1 = new Point(1, 1)
+// p1: Point = (1, 1)
+
+val p2 = new Point(2, 2)
+// p2: Point = (2, 2)
+
+p1 + p2
+```
+
+## メソッド
+3行目のやつを`部分適用`といって、新しい関数を作ることができる。
+```
+def add(x: Int, y: Int) = x + y
+val func = add(1, _)
+func(3)
+// 4
+```
+## フィールド定義
+- `private[this]` -> 高速になるのでパフォーマスチューニングのとき気をつけよう
+## 抽象クラス
+subclassでメソッドの実装を書く時`override`キーワードは文法的には必須ではないけど可読性のために書こう。
+```
+abstract class XY {
+	def x: Int
+	def y: Int
+}
+```
+
+# オブジェクト
+ここから！
