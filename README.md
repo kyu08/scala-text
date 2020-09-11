@@ -39,4 +39,62 @@ val i = 1
 - until
 - yield
 ## match式
-ここから！！！！！！！！！
+```
+val name = "taro"
+name match {
+	case "taro" => "Male"
+	case "hana" => "Female"
+	case _ => "other"
+}
+`_`は`default`的なやつ(ワイルドカードパターン)
+`=>`の右辺は複数行で書くこともできる
+```
+## パターンマッチによる値の取り出し
+以下のように書くと、`b = List(2)`, `c = List(3)`として変数に格納してくれる
+```
+val lst = List("A", "B", "C")
+lst match {
+	case List("A", b, c) =>
+		println("b = " + b)
+		println("c = " + c)
+	case _ => println("nothing")
+}
+```
+
+## as パターン(@)
+`a@List("A")`とすると、`List("A")`を変数`a`に格納してそれ以降で使うことができる。
+```
+val lst = List(List("A"), List("B", "C"))
+    lst match {
+      case List(a@List("A"), x) =>
+        println(a)
+        println(x)
+      case _ =>
+        println("nothing")
+    }
+```
+
+これはコンパイルエラーになるらしい。`a`の型が定まらないから...?
+```
+(List("a"): Any) match {
+  case List(a) | Some(a) =>
+    println(a)
+}
+```
+
+## 中置パターン
+さっきの`match`文は以下のように書き換える事ができる
+```
+lst match {
+	case "A" :: v :: c :: _ => 
+		println("b = " + b)
+		println("c = " + c)
+	case _ =>
+		println("nothing")
+}
+```
+
+### 疑問
+中置パターンのときは`List`ってかかなくていいってことはこれは`List`用の演算子ってこと？
+
+# クラス

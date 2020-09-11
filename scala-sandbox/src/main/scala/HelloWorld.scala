@@ -1,7 +1,12 @@
-import scala.math.pow
+import java.util.Locale
 object HelloWorld {
+  println("-------------------------")
   def main(args: Array[String]): Unit = {
-    for (a <- 1 to 1000; b <- 1 to 1000; c <- 1 to 1000 if a*a == b*b + c*c)
-      println((a,b,c))
+    for(i <- 1 to 1000) {
+      val pw = new scala.util.Random(new java.security.SecureRandom()).alphanumeric.take(5).toList match {
+        case List(a, b, c, d, _) => List(a, b, c, d, a).mkString
+      }
+      println(pw)
+    }
   }
 }
