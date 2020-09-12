@@ -182,9 +182,129 @@ object Person {
   }
 }
 
+# トレイト
+## トレイトの基本
+- クラスからコンストラクタを定義する機能を抜いたようなもの
+- 複数のトレイトをクラスやトレイトにミックスインできる
+- 直接インスタンス化できない
+- (TypeScript の `interface`的なやつやなたぶん)
 
+```
+trait TraitA
+trait TraitB
+class ClassA
 
+// can be compiled.
+class ClassB extends ClassA with TraitA with TraitB
+```
 
+## 菱形継承問題
+Scalaのように多重継承をサポートしている言語では、↓のような場合にメソッドの衝突がおきてしまう。
+Scalaでは`override`指定なしの場合のメソッド定義の衝突はコンパイルエラーになる
+```
+trait TraitA {
+  greet(): Unit
+}
+trait TraitB {
+  greet(): Unit = println("B")
+}
+
+trait TraitC {
+  greet(): Unit =println("C")
+}
+
+class ClassA extend TraitB with TraitC
+```
+この対処法として2つの方法を示す。
+```
+// 1.
+class ClassA extends TraitB with TraitC {
+	override greet(): Unit = println("yeeeeeeeeey")
+}
+
+```
+
+```
+// 2.
+class ClassA extends TraitB with TraitC {
+        override greet(): Unit = super[TraitB].greet()
+
+// でもってこういうこともできる
+	override greet(): Unit = {
+		super[TraitB].greet()
+		super[TraitC].greet()
+	}
+}
+```
+
+とはいえ、継承関係が複雑になった場合に、すべてを明示的に呼ぶのは大変。Scalaのトレイトにはこの問題を解決するために"線形化"という機能がある。
+
+## 線形化(linearization)
+Scalaのトレイトの線形化機能というのは、トレイトがミックスインされた順番をトレイトの継承順番と見なす機能のこと。
+(後にミックスインされた方が優先)
+```
+trait TraitA {
+	def g(): Unit
+}
+
+trait TraitB extends TraitA {
+	override def g(): Unit = println("B")
+}
+trait TraitC extends TraitA {
+        override def g(): Unit = println("C")
+}
+class ClassA extends TraitB with TraitC
+
+(new ClassA).g()
+// "C"
+```
+もちろん`super`を使うことで親のメソッドを呼べる
+
+このような線形化によるトレイトの積み重ねの処理をScalaの用語では、積み重ね可能なトレイトと呼ぶことがある。
+## 落とし穴: トレイトの初期化順序
+`TraitB` が初期化されてから`TraitA`が初期化されるので最終的に`"nullWorld"`が出力されてしまう。
+```
+trait A {
+  val foo: String
+}
+
+trait B extends A {
+  val bar = foo + "World"
+}
+
+class C extends B {
+  val foo = "Hello"
+
+  def printBar(): Unit = println(bar)
+}
+(new C).printBar()
+// nullWorld
+```
+この解決策として、
+1. `lazy val`を使う
+1. `def`を使ってメソッドとして定義する
+がある。
+
+### 注意点
+lazy valはvalに比べて若干処理が重く、複雑な呼び出しでデッドロックが発生する場合があります。 valのかわりにdefを使うと毎回値を計算してしまうという問題があります。があまり問題にはならないのでどちらでもOK(な場合が多い)
+
+### 事前定義
+他の解決策として"事前定義"(Early Definitions)を使う方法がある。フィールドの初期化をスーパークラスよりも先に行う方法。
+```
+trait A {
+	val foo: String
+}
+trait B extends A {
+	val bar = foo + "world" // val のままでよい
+}
+
+class C extends {
+	val foo = "Hello"
+} with B {
+	def printBar(): Unit = println(bar)
+}
+```
+ただ、この例もそうだし、大抵の場合もそうだけど、トレイトの初期化問題は継承されるトレイト側で解決した方がいいことがおおいので事前定義はあまり使わないとおもう。
 
 
 
