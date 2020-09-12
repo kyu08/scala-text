@@ -374,6 +374,42 @@ class G[-A]
 ## 型パラメータの境界(bounds)
 ### 上限境界(upper bounds)
 
+# 関数
+Scalaの関数は、単に`Function0` ~ `Function22`までのトレイトの無名サブクラスのインスタンスである。
+## apply メソッド
+`apply`メソッドはScalaコンパイラから特別扱いされ、`x.apply(y)`は常に`x(y)`のように書くことができる。
+## 関数の型宣言方法
+```Scala
+var func: ((x: Int) => Int) 
+```
+## 関数のカリー化
+```Scala
+val add = (x: Int, y: Int) => x + y
+val addCurried = (x: Int) => ((y: Int) => x + y)
+add(100, 200)
+addCurried(100)(200)
+```
+## 高階関数
+関数を引数に取ったり関数を返すメソッドや関数のこと。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

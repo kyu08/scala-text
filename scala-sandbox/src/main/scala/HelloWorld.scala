@@ -1,14 +1,20 @@
+import scala.io.Source
 object HelloWorld {
   def main(args: Array[String]): Unit = {
   }
   println("-------------------------")
 
-  class Cell[A](var value: A) {
-    def put(newValue: A): Unit = {
-      value = newValue
+  def withFile[A](filename: String)(f: Source => A): A = {
+    val s = Source.fromFile(filename)
+    try {
+      f(s)
+    } finally {
+      s.close()
     }
+  }
 
-    def get(): A = value
+  def printFile(filename: String): Unit = withFile[String]("fileN"){ file =>
+    file.getLines.foreach(println)
   }
 
 
