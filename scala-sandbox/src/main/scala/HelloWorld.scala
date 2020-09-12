@@ -3,19 +3,14 @@ object HelloWorld {
   }
   println("-------------------------")
 
-  trait A {
-    val foo: String
-  }
-  trait B extends A {
-    lazy val bar = foo + "World"
+  class Cell[A](var value: A) {
+    def put(newValue: A): Unit = {
+      value = newValue
+    }
+
+    def get(): A = value
   }
 
-  class C extends B {
-    val foo = "Hello"
-    def printBar(): Unit = println(bar)
-  }
-
-  (new C().printBar())
 
   println("-------------------------")
 }

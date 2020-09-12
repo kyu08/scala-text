@@ -172,16 +172,6 @@ Scala では全ての値がオブジェクトである。(オブジェクトを�
 
 ### tips
 - `sbt console`内で`:paste`って打つと改行できるモードになる。
-
-class Person(name: String, private[this] val age: Int)
-
-object Person {
-  def printWeight(): Unit = {
-    val taro = new Person("taro", 20)
-    println(taro.age)
-  }
-}
-
 # トレイト
 ## トレイトの基本
 - クラスからコンストラクタを定義する機能を抜いたようなもの
@@ -313,13 +303,76 @@ a + b
 ```
 
 # 型パラメータと変位指定
+クラスは、0こ以上の型をパラメータとしてとることができる。
+最初の方から順に`A`, `B`...と名付けるのがScalaでは慣習的。
 
+### 思ったこと
+引数をもたない関数を定義する時でも、可読性のために`()`は書いた方がいいと思いました。(Scalaでは省略可能。以下のような動作をする)(定義元では()ありでかつ呼び出し側で()なしだとエラー)
+```
+// OK
+def hoge(): Unit = println("Hoge")
+hoge()
+// OK
+def hoge(): Unit = println("Hoge")
+hoge
+// NG
+def hoge: Unit = println("Hoge")
+hoge()
+// OK
+def hoge(): Unit = println("Hoge")
+hoge
+```
 
+### 疑問
+- `List`と`Tuple`ってどう違うねん
 
+### Tuple のシンタックスシュガー
+```
+new Tuple2(1, 2)
+// equals
+(1, 2)
+```
+## 変位指定(variance)
+反変と共変について
 
+## 共変(covariant)
+まず、"非変"とは、
+```
+G...型パラメータをもったクラス
+A, B 型パラメータ
+```
+のとき、`A` = `B` のときにのみ、
+```
+val G[A] = G[B]  // 疑問: これなにしてるの
+```
+というような代入が許されるという性質のこと。
+共変とは、`A`が`B`を継承している時のみ
+```
+val : G[B] = G[A]
+```
+とできる。
 
+```
+class G[+A]
+```
+と書くと共変にできる。
 
+そのあとの説明は理解できず
 
+## 反変
+共変の対となる性質。
+`A`が`B`が継承している時のみ
+```
+val G[A] = G[B]
+```
+という代入が許される。
+```
+class G[-A]
+```
+と書く。
+
+## 型パラメータの境界(bounds)
+### 上限境界(upper bounds)
 
 
 
