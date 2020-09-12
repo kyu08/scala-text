@@ -392,16 +392,66 @@ addCurried(100)(200)
 ## 高階関数
 関数を引数に取ったり関数を返すメソッドや関数のこと。
 
+# コレクションライブラリ
+mutable な方が実行速度は早いけど堅牢性などを考えるとimmutableに書くべきだよね。
+## Array
+要素が同じでもequalsがtrueにならない、などの罠があるのでパフォーマンス上必要になる場合以外はあまり積極的に使うものではない。
+
+## Range
+`to`とか`until`で呼び出すことが多い
+```
+1 to 5
+1 until 4
+(1 to 4).toList // List(1,2,3,4)
+```
+
+## List
+`List`や`Vector`はよく使われる
+`List`はimmutable
+
+### Nil
+空のList
+
+### ::
+`::`(コンス)は、Listの銭湯に要素をくっつけるメソッド
+```
+val a1 = 1 :: Nil  // List(1)
+val a2 = 2 :: a1  // List(2, 1)
+```
+
+### 疑問
+```
+// これはできるのに
+1 :: List(2)
+// とかはできないんだね
+"," mkString List(1,2)
+(左).メソッド(右)の形になる関係じゃないとむりってことかな...
+```
+
+## 中置記法
+Scalaでは1引数のメソッドは中置記法で書くことができる。ちなみに、
+```
+1 :: 2 :: Nil
+// equals
+Nil.::(2).::(1)
+```
+ってかんじ。
 
 
+## Scala の0引数メソッドの定義と呼び出し
+Scala の0引数メソッドは`()`なしと`()`を使った定義の2種類ある。挙動は上で書いた通り。(別々のメソッドとして定義できるの知らなかった。あんまりよくなさそう。)
 
+## 疑問
+これの `xs.foldLeft` がよくわからん
+```
+def mkString[T](list: List[T])(sep: String): String = list match {
+  case Nil => ""
+  case x::xs => xs.foldLeft(x.toString){(x, y) => x + sep + y}
+}
+```
 
-
-
-
-
-
-
+flatMapから！！！！！1
+https://scala-text.github.io/scala_text/collection.html#flatmap%EF%BC%9Alist%E3%82%92%E3%81%9F%E3%81%84%E3%82%89%E3%81%AB%E3%81%99%E3%82%8B
 
 
 
