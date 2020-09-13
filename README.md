@@ -450,8 +450,56 @@ def mkString[T](list: List[T])(sep: String): String = list match {
 }
 ```
 
-flatMapから！！！！！1
-https://scala-text.github.io/scala_text/collection.html#flatmap%EF%BC%9Alist%E3%82%92%E3%81%9F%E3%81%84%E3%82%89%E3%81%AB%E3%81%99%E3%82%8B
+### flatMap
+`List`をたいらにする
+```Scala
+List(List(1,2), List(3,4)).flatMap{e => e.map(g => g + 1)}
+```
+形を変えると`flatMap`を使って`for`をかける
+
+```Scala
+List(1,2,3).flatMap{e => List(4, 5).map(g => g * e)}
+// List(4, 5, 8, 10, 12, 15)
+
+for(x <- col1; y <- col2;) yield z
+// equals
+col1.flapMap{e => col2.map{g => z}}
+```
+
+## Vector
+- immutable
+- 高速
+- まずこれを使うことを検討するべき
+
+## Map
+immutable と mutable の2種類がある
+なにも設定せずに`Map`と書くと`scala.collection.immutable.Map`が使われる。
+内部の実装として主に`scala.collection.immutable.HashMap`と`scala.collection.immutable.TreeMap`があるんだけど、通常は`HashMap`が使われる。
+
+`scala.collection.mutable.Map`
+
+## Set
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
