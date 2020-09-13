@@ -488,12 +488,89 @@ immutable と mutable の2種類がある
 ## ケースクラスによって自動生成されるもの
 インスタンス間の同値比較ができるようになる。クラスが同じでプライマリコンストラクタ引数の値がすべて一致していれば同値と判定する。
 
+# エラー処理
+Scalaでの例外処理は
+1. 例外を使う方法
+1. `Option`や`Either`や`Try`などのデータ型を使う方法
+がある。
+
+## エラー処理で実現すべきこと
+### 例外安全性
+例外が発生してもシステムがダウンしたり、データの不整合などの問題が起きないこと
+### 強い例外安全性
+例外が発生した場合、すべての状態が例外発生前に戻らなければならないという制約。
+
+## `Option`
+Option はScalaでもっとも多用されるデータ型のひとつ。
+nullの代替として使われる。
+
+- `Some`
+- `None`
+の2つがある。
+`Some`は何かしらの値が格納されている時の`Option`の型で`None`は何も値が格納されていない時の`Option`の型。
 
 
+### 疑問
+`_`の意味がよくわかってない。(なんかよく出てくる便利なやつみたいなイメージ)
 
+- `None`は3倍したりしても`None`のままなので扱いやすい。
 
+`flatten`するとSomeのネストを解消してくれる
 
+`Option`にも`flapMap`メソッドがある
 
+```Scala
+v1.map(i1 => v2.map(i2 => i2 * i1)).flatten
+// equals
+v1.flapMap(i1 => v2.map(i2 => i2 * i1))
+```
+
+## Either
+`Option`によって値が取得できたかどうかはわかるけど、エラーの状態まではわからない。エラーの種類まで取得できるのが`Either`。
+Option は `Some` or `None`だったけど、`Either`は `Right` or `Left`
+一般的に`Left`にエラー値を、`Right`に正常な値をいれることが多い。(英語の"right"が正しいという意味なので、それにかけているという説があります。)
+ログインエラーを表現する例を示す。↓このように代数的データ型として定義しよう。
+```Scala
+sealed trait LoginError
+case object InvalidPassword extends LoginError
+case object UserNotFound extends LoginError
+case object PasswordLocked extends LoginError
+```
+ログインAPIの型は以下のようにする
+```Scala
+case class User(id: Long, name: String, password: String)
+
+object LoginService {
+	def login(name: String, password: String): Either[LoginError, User] = ???
+}
+```
+で、これを使うと...
+```Scala
+LoginService.login(name = "hoge", password = "pass") match {
+	case Right(User) => println(s"Logged in!")
+	case Left(InvalidPasswordError) => println(s"invalid pass")
+}
+```
+みたいな感じになるけど、実はこのコードだと、`UserNotFound`, `PasswordLocked`の場合が抜けてる。それをコンパイラが教えてくれるんやで。素敵やろ
+
+## 名前渡しパラメータ
+多くの言語でもそうなようにScalaでも、メソッド実行前にはまず引数が評価され、次にメソッド本体のコードが実行される。
+この評価順序のことを先行評価(eager evaluation)あるいは正格評価(strict evaliation)とよぶ。
+名前渡しパラメータを使うと、変数が実際に使用される箇所まで評価を遅延させることができる。
+
+## Try
+Eitherと同じで正常な値とエラー値のどちらかを表現するデータ型である。
+Eitherと違うのは、2つの型が平等ではなく、エラー値がThrowableに限定されており、型引数を1つしか取らないこと。
+具体的には
+- Success
+- Failure
+の2つをとる。
+例外が起きそうな箇所を`Try`で包みFailureにして値として扱えるようにするのがTryの特徴。
+
+## Option と Either と Try の使い分け
+nullを扱う場面ではOptionでじゅうぶん。
+Optionだと情報が足りなくて、かつエラー型が代数的に定義されているものを扱うときはEitherがよい。
+Tryは例外を値として扱いたい時に用いると良い。非同期処理をする時など。
 
 
 
