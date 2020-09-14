@@ -591,6 +591,9 @@ implicit def intToBool(arg: Int): Boolean = arg != 0
 # 型クラス
 型クラス ≒ implicit parameter
 
+# Future / Promise
+## Future とは
+JavaScript の Promise に似てるよ。
 
 
 
