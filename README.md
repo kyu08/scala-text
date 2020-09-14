@@ -588,7 +588,8 @@ implicit def intToBool(arg: Int): Boolean = arg != 0
 ### 疑問
 結局`enrichString`が何をしているのかよくわからなかった。
 
-
+# 型クラス
+型クラス ≒ implicit parameter
 
 
 
