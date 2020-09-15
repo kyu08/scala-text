@@ -595,7 +595,7 @@ implicit def intToBool(arg: Int): Boolean = arg != 0
 ## Future とは
 JavaScript の Promise に似てるよ。
 
-
+## Promise
 
 
 
