@@ -615,15 +615,51 @@ JavaScript の Promise に似てるよ。
 - `private[this]`はそのオブジェクトからのみ。
 てことは`private[this]`だとobject からも呼べるってことか
 
+# トレイトを使ったリファクタリング
+こういうクラスがあって、`registaer`と`login`以外のメソッドを外部に隠蔽したいとき、隠したいものに`private[this]`つけるのもいいけど、
+```Scala
+class UserService {
+  // メソッドの実装は同じなので???で代用しています
+
+  // ストレージ機能
+  def insert(user: User): User = ???
+
+  def createUser(rs: WrappedResultSet): User = ???
+
+  def find(name: String): Option[User] = ???
+
+  def find(id: Long): Option[User] = ???
+
+  // パスワード機能
+  def hashPassword(rawPassword: String): String = ???
+
+  def checkPassword(rawPassword: String, hashedPassword: String): Boolean = ???
+
+  // ユーザー登録
+  def register(name: String, rawPassword: String): User = ???
+
+  // ユーザー認証
+  def login(name: String, rawPassword: String): User = ???
+}
+```
+↓のようにtraitを用いて外部に公開するメソッドを制限する方法もある。
 
 
+```Scala
+trait UserService {
+  val maxNameLength = 32
 
+  def register(name: String, rawPassword: String): User
 
+  def login(name: String, rawPassword: String): User
+}
+```
 
+### 感想
+traitが実装を持てると再利用性が高くてよさそう！
 
-
-
-
+## DI
+DI して 依存の方向を適切に保とう！
 
 
 
