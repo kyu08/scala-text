@@ -1,15 +1,15 @@
 object HelloWorld {
   def main(args: Array[String]): Unit = {
     println("🥺🥺🥺🥺🥺🥺🥺🥺🥺🥺🥺🥺🥺🥺🥺🥺🥺🥺🥺")
-    val taro = "john"
+    val list = List(1,2,4)
 
-    val hogehoge = taro match {
-      case "Taro" | "john" => "tarooo"
-      case "Jiro" => "Jirooo"
-      case _ => "noooooo"
+    list match {
+      case 1 :: b :: c :: _ =>
+        println("b = " + b)
+        println("c = " + c)
+      case _ =>
+        println("no result")
     }
-
-    println(hogehoge)
 
     println("🥺🥺🥺🥺🥺🥺🥺🥺🥺🥺🥺🥺🥺🥺🥺🥺🥺🥺🥺")
   }
